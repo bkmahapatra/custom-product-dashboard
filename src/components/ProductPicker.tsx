@@ -71,11 +71,9 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        console.log({ entries });
         const entry = entries[0];
 
         if (entry.isIntersecting && !isLoading) {
-          console.log("first");
           setPage((prev) => prev + 1);
         }
       },
