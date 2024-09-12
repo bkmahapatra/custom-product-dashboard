@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import ProductItem from "./components/ProductItem";
 import { Product } from "./types/products";
+// import ProductPicker from "./components/ProductPicker";
 
 const generateId = () => {
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -15,12 +16,29 @@ function App() {
       title: "",
       variants: [],
     };
-
     setProducts((prevProducts) => [...prevProducts, newProduct]);
   }, []);
 
+  const handleProductChange = (index: number) => {
+    return (productData: Product) => {
+      const newProducts = [...products];
+      newProducts[index] = productData;
+      setProducts(newProducts);
+    };
+  };
+
+  const removeProduct = useCallback((index: number) => {
+    return () => {
+      setProducts((prevProducts) => {
+        const newProducts = [...prevProducts];
+        newProducts.splice(index, 1);
+        return newProducts;
+      });
+    };
+  }, []);
+
   return (
-    <div className="w-full h-screen flex items-start justify-center my-20">
+    <div className="w-full h-screen flex items-start justify-center py-20">
       <div className="w-6/12 flex flex-col gap-4">
         <div className="text-lg font-bold my-2">Add Products</div>
 
@@ -32,7 +50,13 @@ function App() {
           </div>
 
           {products.map((product, index) => (
-            <ProductItem key={product.id} index={index} product={product} />
+            <ProductItem
+              key={product.id}
+              index={index}
+              product={product}
+              removeProduct={removeProduct(index)}
+              setProduct={handleProductChange(index)}
+            />
           ))}
         </div>
 
@@ -44,29 +68,10 @@ function App() {
             Add Product
           </button>
         </div>
+        {/* <ProductPicker /> */}
       </div>
     </div>
   );
 }
 
 export default App;
-// const fetchProducts = async () => {
-//   const url = `http://stageapi.monkcommerce.app/task/products/search?search=Hat&page=1&limit=1`;
-
-//   try {
-//     const response = await axios.get(url, {
-//       headers: {
-//         "x-api-key": "561cc0d3e5d7492abfca16b974f22e22",
-//       },
-//     });
-
-//     const data = response.data;
-//     console.log(data);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// useEffect(() => {
-//   fetchProducts();
-// }, []);
