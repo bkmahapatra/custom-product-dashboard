@@ -1,255 +1,9 @@
 import { BiX } from "react-icons/bi";
 import { IoSearchOutline } from "react-icons/io5";
 import Modal from "react-modal";
-import {
-  // FetchedProductVariant,
-  FetechedProduct,
-  Product,
-} from "../types/products";
-import { useCallback, useEffect, useState } from "react";
+import { FetechedProduct, Product } from "../types/products";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const data = [
-  {
-    id: 6805248770255,
-    title: "Example Hat 1",
-    vendor: "Acme",
-    handle: "1",
-    created_at: "2021-08-15T18:20:04Z",
-    updated_at: "2024-03-29T20:26:01Z",
-    published_at: "2024-03-29T20:19:44Z",
-    tags: "mens hat example",
-    options: [
-      {
-        id: 8720141779151,
-        product_id: 6805248770255,
-        name: "Title",
-        position: 1,
-        values: ["Grey"],
-      },
-    ],
-    image: {
-      id: 29377096974543,
-      product_id: 6805248770255,
-      src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie.jpg?v=1629051604",
-    },
-    images: [
-      {
-        id: 29377096974543,
-        product_id: 6805248770255,
-        src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie.jpg?v=1629051604",
-      },
-    ],
-    admin_graphql_api_id: "gid://shopify/Product/6805248770255",
-    status: "active",
-    variants: [
-      {
-        id: 40499643351247,
-        product_id: 6805248770255,
-        title: "Grey",
-        inventory_policy: "deny",
-        price: "17.99",
-        compare_at_price: "22.99",
-        option1: "Grey",
-        created_at: "2021-08-15T18:20:04Z",
-        updated_at: "2023-10-27T14:35:18Z",
-        inventory_quantity: -76,
-        admin_graphql_api_id: "gid://shopify/ProductVariant/40499643351247",
-      },
-    ],
-  },
-  {
-    id: 6805249130703,
-    title: "Example Hat 10",
-    vendor: "Acme",
-    handle: "10",
-    created_at: "2021-08-15T18:20:42Z",
-    updated_at: "2023-10-23T12:32:05Z",
-    published_at: "2021-08-18T09:35:58Z",
-    tags: "mens hat example",
-    options: [
-      {
-        id: 8720142205135,
-        product_id: 6805249130703,
-        name: "Title",
-        position: 1,
-        values: ["Grey"],
-      },
-    ],
-    image: {
-      id: 29377098547407,
-      product_id: 6805249130703,
-      src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_cfeb91dd-a183-4ff5-9f6d-4ff512f51132.jpg?v=1629051642",
-    },
-    images: [
-      {
-        id: 29377098547407,
-        product_id: 6805249130703,
-        src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_cfeb91dd-a183-4ff5-9f6d-4ff512f51132.jpg?v=1629051642",
-      },
-    ],
-    admin_graphql_api_id: "gid://shopify/Product/6805249130703",
-    status: "active",
-    variants: [
-      {
-        id: 40499644629199,
-        product_id: 6805249130703,
-        title: "Grey",
-        inventory_policy: "deny",
-        price: "17.95",
-        compare_at_price: "22.99",
-        option1: "Grey",
-        created_at: "2021-08-15T18:20:42Z",
-        updated_at: "2023-10-27T14:35:18Z",
-        inventory_quantity: -42,
-        admin_graphql_api_id: "gid://shopify/ProductVariant/40499644629199",
-      },
-    ],
-  },
-  {
-    id: 6805253062863,
-    title: "Example Hat 101",
-    vendor: "Acme",
-    handle: "101",
-    created_at: "2021-08-15T18:27:32Z",
-    updated_at: "2024-02-23T16:10:03Z",
-    published_at: "2021-08-18T09:36:02Z",
-    tags: "mens hat example",
-    options: [
-      {
-        id: 8720146694351,
-        product_id: 6805253062863,
-        name: "Title",
-        position: 1,
-        values: ["Grey"],
-      },
-    ],
-    image: {
-      id: 29377120305359,
-      product_id: 6805253062863,
-      src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_6e73c2e5-885d-43cb-9fae-2fb9670cfa66.jpg?v=1629052052",
-    },
-    images: [
-      {
-        id: 29377120305359,
-        product_id: 6805253062863,
-        src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_6e73c2e5-885d-43cb-9fae-2fb9670cfa66.jpg?v=1629052052",
-      },
-    ],
-    admin_graphql_api_id: "gid://shopify/Product/6805253062863",
-    status: "active",
-    variants: [
-      {
-        id: 40499657113807,
-        product_id: 6805253062863,
-        title: "Grey",
-        inventory_policy: "deny",
-        price: "17.99",
-        compare_at_price: "22.99",
-        option1: "Grey",
-        created_at: "2021-08-15T18:27:32Z",
-        updated_at: "2024-02-23T16:06:04Z",
-        inventory_quantity: -3,
-        admin_graphql_api_id: "gid://shopify/ProductVariant/40499657113807",
-      },
-    ],
-  },
-  {
-    id: 6805253095631,
-    title: "Example Hat 102",
-    vendor: "Acme",
-    handle: "102",
-    created_at: "2021-08-15T18:27:36Z",
-    updated_at: "2023-05-22T16:45:09Z",
-    published_at: "2021-08-23T13:21:45Z",
-    tags: "mens hat example",
-    options: [
-      {
-        id: 8720146727119,
-        product_id: 6805253095631,
-        name: "Title",
-        position: 1,
-        values: ["Grey"],
-      },
-    ],
-    image: {
-      id: 29377120436431,
-      product_id: 6805253095631,
-      src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_157b20fd-defe-4b3e-a91a-597d51444ab9.jpg?v=1629052056",
-    },
-    images: [
-      {
-        id: 29377120436431,
-        product_id: 6805253095631,
-        src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_157b20fd-defe-4b3e-a91a-597d51444ab9.jpg?v=1629052056",
-      },
-    ],
-    admin_graphql_api_id: "gid://shopify/Product/6805253095631",
-    status: "active",
-    variants: [
-      {
-        id: 40499657146575,
-        product_id: 6805253095631,
-        title: "Grey",
-        inventory_policy: "deny",
-        price: "17.99",
-        compare_at_price: "22.99",
-        option1: "Grey",
-        created_at: "2021-08-15T18:27:36Z",
-        updated_at: "2023-10-27T14:35:23Z",
-        inventory_quantity: -2,
-        admin_graphql_api_id: "gid://shopify/ProductVariant/40499657146575",
-      },
-    ],
-  },
-  {
-    id: 6805253193935,
-    title: "Example Hat 103",
-    vendor: "Acme",
-    handle: "103",
-    created_at: "2021-08-15T18:27:40Z",
-    updated_at: "2023-06-07T15:45:05Z",
-    published_at: "2021-10-28T19:14:21Z",
-    tags: "mens hat example",
-    options: [
-      {
-        id: 8720146858191,
-        product_id: 6805253193935,
-        name: "Title",
-        position: 1,
-        values: ["Grey"],
-      },
-    ],
-    image: {
-      id: 29377120501967,
-      product_id: 6805253193935,
-      src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_fe69295e-2905-4fd8-890b-bc6ba2b6aad8.jpg?v=1629052060",
-    },
-    images: [
-      {
-        id: 29377120501967,
-        product_id: 6805253193935,
-        src: "https://cdn.shopify.com/s/files/1/0506/8439/5727/products/kids-beanie_fe69295e-2905-4fd8-890b-bc6ba2b6aad8.jpg?v=1629052060",
-      },
-    ],
-    admin_graphql_api_id: "gid://shopify/Product/6805253193935",
-    status: "active",
-    variants: [
-      {
-        id: 40499657310415,
-        product_id: 6805253193935,
-        title: "Grey",
-        inventory_policy: "deny",
-        price: "17.99",
-        compare_at_price: "22.99",
-        option1: "Grey",
-        created_at: "2021-08-15T18:27:40Z",
-        updated_at: "2023-10-27T14:35:23Z",
-        inventory_quantity: -2,
-        admin_graphql_api_id: "gid://shopify/ProductVariant/40499657310415",
-      },
-    ],
-  },
-];
 interface PropType {
   // data: FetechedProduct[];
   isOpen: boolean;
@@ -259,27 +13,20 @@ interface PropType {
 
 const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
   const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<FetechedProduct[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  const listRef = useRef(null);
+
+  // product fetch operation
   const fetchProducts = useCallback(
     async (searchTerm: string, page: number) => {
-      // const url = `https://stageapi.monkcommerce.app/task/products/search?search=${searchTerm}&page=${page}&limit=5`;
-      const url = `https://stageapi.monkcommerce.app/task/products/search?search=${searchTerm}&page=${page}&limit=5`;
+      const url = `https://stageapi.monkcommerce.app/task/products/search?search=${searchTerm}&page=${page}&limit=6`;
 
       setIsLoading(true);
       try {
-        // const customHeaders = new Headers();
-        // customHeaders.append("x-api-key", "72njgfa948d9aS7gs5");
-
-        // const reqOptions = {
-        //   method: "GET",
-        //   headers: { "x-api-key": "72njgfa948d9aS7gs5" },
-        //   redirect: "follow",
-        // };
-
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -287,7 +34,7 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
           },
         });
         const data = await response.json();
-        setProducts(data);
+        setProducts((prev) => [...prev, ...data]);
       } catch (error) {
         console.log(error);
       } finally {
@@ -297,23 +44,56 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
     []
   );
 
+  // search query
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || searchTerm === null) {
       return;
     }
 
-    if (searchTerm === "") {
-      fetchProducts(searchTerm, page);
-      return;
-    }
-
+    setIsLoading(true);
     const timer = setTimeout(() => {
-      setIsLoading(true);
-      fetchProducts(searchTerm, page);
+      setProducts([]);
+      fetchProducts(searchTerm, 1);
+      setPage(1);
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [searchTerm, page, isOpen]);
+  }, [searchTerm]);
+
+  // page change
+  useEffect(() => {
+    if (isOpen) {
+      fetchProducts(searchTerm || "", page);
+    }
+  }, [page, isOpen]);
+
+  // infinite scrolling
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        console.log({ entries });
+        const entry = entries[0];
+
+        if (entry.isIntersecting && !isLoading) {
+          console.log("first");
+          setPage((prev) => prev + 1);
+        }
+      },
+      {
+        threshold: 1.0,
+      }
+    );
+
+    if (listRef.current) {
+      observer.observe(listRef.current);
+    }
+
+    return () => {
+      if (listRef.current) {
+        observer.unobserve(listRef.current);
+      }
+    };
+  }, [isLoading]);
 
   const handleAddProduct = () => {
     if (selectedProduct) {
@@ -334,6 +114,10 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
       variants: product.variants.map((v) => ({
         id: v.id,
         title: v.title,
+        discounts: {
+          type: "percentage",
+          value: 0,
+        },
       })),
     });
   };
@@ -468,7 +252,7 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
                             />
                             <div>{variant.title}</div>
                             <div>
-                              {variant?.inventory_quantity || ""} available
+                              {variant?.inventory_quantity || 0} available
                             </div>
                             <div>${variant.price}</div>
                           </div>
@@ -478,6 +262,10 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
                 </div>
               );
             })}
+
+          <div ref={listRef} className="h-8 m-3 text-center">
+            {isLoading && <p>Loading...</p>}
+          </div>
         </div>
 
         <div className="flex justify-between items-center">
@@ -503,3 +291,11 @@ const ProductPicker = ({ isOpen, closeModal, setProduct }: PropType) => {
 };
 
 export default ProductPicker;
+// const customHeaders = new Headers();
+// customHeaders.append("x-api-key", "72njgfa948d9aS7gs5");
+
+// const reqOptions = {
+//   method: "GET",
+//   headers: { "x-api-key": "72njgfa948d9aS7gs5" },
+//   redirect: "follow",
+// };
